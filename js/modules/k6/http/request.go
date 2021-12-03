@@ -90,7 +90,7 @@ func (c *Client) Request(method string, url goja.Value, args ...goja.Value) (*Re
 		return nil, err
 	}
 	c.processResponse(resp, req.ResponseType)
-	return c.responseFromHttpext(resp), nil
+	return c.responseFromHTTPext(resp), nil
 }
 
 // processResponse stores the body as an ArrayBuffer if indicated by
@@ -102,8 +102,8 @@ func (c *Client) processResponse(resp *httpext.Response, respType httpext.Respon
 	}
 }
 
-func (c *Client) responseFromHttpext(resp *httpext.Response) *Response {
-	return &Response{Response: resp, client: c, cachedJSON: nil, validatedJSON: false}
+func (c *Client) responseFromHTTPext(resp *httpext.Response) *Response {
+	return &Response{Response: resp, client: c}
 }
 
 //TODO break this function up
@@ -391,14 +391,14 @@ func (c *Client) prepareBatchArray(requests []interface{}) (
 			if errors.As(err, &k6e) {
 				resp.ErrorCode = int(k6e.Code)
 			}
-			results[i] = c.responseFromHttpext(resp)
+			results[i] = c.responseFromHTTPext(resp)
 			return batchReqs, results, err
 		}
 		batchReqs[i] = httpext.BatchParsedHTTPRequest{
 			ParsedHTTPRequest: parsedReq,
 			Response:          resp,
 		}
-		results[i] = c.responseFromHttpext(resp)
+		results[i] = c.responseFromHTTPext(resp)
 	}
 
 	return batchReqs, results, nil
@@ -421,14 +421,14 @@ func (c *Client) prepareBatchObject(requests map[string]interface{}) (
 			if errors.As(err, &k6e) {
 				resp.ErrorCode = int(k6e.Code)
 			}
-			results[key] = c.responseFromHttpext(resp)
+			results[key] = c.responseFromHTTPext(resp)
 			return batchReqs, results, err
 		}
 		batchReqs[i] = httpext.BatchParsedHTTPRequest{
 			ParsedHTTPRequest: parsedReq,
 			Response:          resp,
 		}
-		results[key] = c.responseFromHttpext(resp)
+		results[key] = c.responseFromHTTPext(resp)
 		i++
 	}
 

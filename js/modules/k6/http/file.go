@@ -44,7 +44,7 @@ func escapeQuotes(s string) string {
 // File returns a FileData object.
 //
 // TODO: deprecate?
-func (mi *ModuleInstance) File(data interface{}, args ...string) FileData {
+func (mi *ModuleInstance) file(data interface{}, args ...string) FileData {
 	// supply valid default if filename and content-type are not specified
 	fname, ct := fmt.Sprintf("%d", time.Now().UnixNano()), "application/octet-stream"
 

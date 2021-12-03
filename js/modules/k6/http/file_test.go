@@ -76,7 +76,7 @@ func TestHTTPFile(t *testing.T) {
 					require.EqualError(t, val.(error), tc.expErr)
 				}()
 			}
-			out := mi.File(tc.input, tc.args...)
+			out := mi.file(tc.input, tc.args...)
 			assert.Equal(t, tc.expected, out)
 		})
 	}

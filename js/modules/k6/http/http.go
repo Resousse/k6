@@ -82,7 +82,7 @@ func (r *RootModule) NewModuleInstance(vu modules.VU) modules.Instance {
 	mustExport("url", mi.URL)
 	mustExport("CookieJar", mi.newCookieJar)
 	mustExport("cookieJar", mi.getVUCookieJar)
-	mustExport("file", mi.File) // TODO: deprecate or refactor?
+	mustExport("file", mi.file) // TODO: deprecate or refactor?
 
 	// TODO: refactor so the Client actually has better APIs and these are
 	// wrappers (facades) that convert the old k6 idiosyncratic APIs to the new
