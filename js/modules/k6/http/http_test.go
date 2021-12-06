@@ -35,12 +35,17 @@ import (
 	"go.k6.io/k6/lib/netext/httpext"
 )
 
-func getTestModuleInstance(t testing.TB, ctx context.Context, state *lib.State) (*goja.Runtime, *ModuleInstance) {
+//nolint: golint, revive
+func getTestModuleInstance(
+	t testing.TB, ctx context.Context, state *lib.State,
+) (*goja.Runtime, *ModuleInstance) {
 	rt := goja.New()
 	rt.SetFieldNameMapper(common.FieldNameMapper{})
 
 	if ctx == nil {
-		ctx = context.Background()
+		dummyCtx, cancel := context.WithCancel(context.Background())
+		t.Cleanup(cancel)
+		ctx = dummyCtx
 	}
 
 	root := New()
@@ -55,7 +60,7 @@ func getTestModuleInstance(t testing.TB, ctx context.Context, state *lib.State) 
 	mi, ok := root.NewModuleInstance(mockVU).(*ModuleInstance)
 	require.True(t, ok)
 
-	rt.Set("http", mi.Exports().Default)
+	require.NoError(t, rt.Set("http", mi.Exports().Default))
 
 	return rt, mi
 }
@@ -74,6 +79,7 @@ func TestTagURL(t *testing.T) {
 	for expr, data := range testdata {
 		expr, data := expr, data
 		t.Run("expr="+expr, func(t *testing.T) {
+			t.Parallel()
 			tag, err := httpext.NewURL(data.u, data.n)
 			require.NoError(t, err)
 			v, err := rt.RunString("http.url`" + expr + "`")

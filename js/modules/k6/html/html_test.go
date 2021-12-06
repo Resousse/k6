@@ -30,7 +30,6 @@ import (
 
 	"go.k6.io/k6/js/common"
 	"go.k6.io/k6/js/modulestest"
-	"go.k6.io/k6/lib"
 	"go.k6.io/k6/lib/metrics"
 )
 
@@ -67,13 +66,12 @@ const testHTML = `
 </body>
 `
 
-func getTestModuleInstance(t testing.TB, ctx context.Context, state *lib.State) (*goja.Runtime, *ModuleInstance) {
+func getTestModuleInstance(t testing.TB) (*goja.Runtime, *ModuleInstance) {
 	rt := goja.New()
 	rt.SetFieldNameMapper(common.FieldNameMapper{})
 
-	if ctx == nil {
-		ctx = context.Background()
-	}
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
 
 	root := New()
 	mockVU := &modulestest.VU{
@@ -82,19 +80,21 @@ func getTestModuleInstance(t testing.TB, ctx context.Context, state *lib.State) 
 			Registry: metrics.NewRegistry(),
 		},
 		CtxField:   ctx,
-		StateField: state,
+		StateField: nil,
 	}
 	mi, ok := root.NewModuleInstance(mockVU).(*ModuleInstance)
 	require.True(t, ok)
 
-	rt.Set("html", mi.Exports().Default)
+	require.NoError(t, rt.Set("html", mi.Exports().Default))
 
 	return rt, mi
 }
 
+// TODO: split apart?
+// nolint: cyclop, tparallel
 func TestParseHTML(t *testing.T) {
 	t.Parallel()
-	rt, _ := getTestModuleInstance(t, nil, nil)
+	rt, _ := getTestModuleInstance(t)
 	require.NoError(t, rt.Set("src", testHTML))
 
 	// TODO: I literally cannot think of a snippet that makes goquery error.

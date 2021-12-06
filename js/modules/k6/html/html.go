@@ -54,12 +54,14 @@ func New() *RootModule {
 	return &RootModule{}
 }
 
+// Exports returns the JS values this module exports.
 func (mi *ModuleInstance) Exports() modules.Exports {
 	return modules.Exports{
 		Default: mi.exports,
 	}
 }
 
+// NewModuleInstance returns an HTML module instance for each VU.
 func (r *RootModule) NewModuleInstance(vu modules.VU) modules.Instance {
 	rt := vu.Runtime()
 	mi := &ModuleInstance{
@@ -77,6 +79,7 @@ func (mi *ModuleInstance) parseHTML(src string) (Selection, error) {
 	return ParseHTML(mi.vu.Runtime(), src)
 }
 
+// ParseHTML parses the provided HTML source into a Selection object.
 func ParseHTML(rt *goja.Runtime, src string) (Selection, error) {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(src))
 	if err != nil {

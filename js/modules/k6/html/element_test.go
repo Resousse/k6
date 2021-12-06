@@ -54,7 +54,7 @@ const testHTMLElem = `
 
 func TestElement(t *testing.T) {
 	t.Parallel()
-	rt, _ := getTestModuleInstance(t, nil, nil)
+	rt, _ := getTestModuleInstance(t)
 	require.NoError(t, rt.Set("src", testHTMLElem))
 
 	_, err := rt.RunString(`var doc = html.parseHTML(src)`)

@@ -402,7 +402,7 @@ const testGenElems = `<html><body>
 
 func TestGenElements(t *testing.T) {
 	t.Parallel()
-	rt, mi := getTestModuleInstance(t, nil, nil)
+	rt, mi := getTestModuleInstance(t)
 	require.NoError(t, rt.Set("src", testGenElems))
 
 	_, err := rt.RunString("var doc = html.parseHTML(src)")

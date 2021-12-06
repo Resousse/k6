@@ -59,7 +59,7 @@ func (e expectedStatuses) match(status int) bool {
 // expectedStatuses returns expectedStatuses object based on the provided arguments.
 // The arguments must be either integers or object of `{min: <integer>, max: <integer>}`
 // kind. The "integer"ness is checked by the Number.isInteger.
-func (mi *ModuleInstance) expectedStatuses(args ...goja.Value) *expectedStatuses { //nolint: golint
+func (mi *ModuleInstance) expectedStatuses(args ...goja.Value) *expectedStatuses {
 	rt := mi.vu.Runtime()
 
 	if len(args) == 0 {

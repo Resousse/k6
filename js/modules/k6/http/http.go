@@ -56,7 +56,7 @@ func New() *RootModule {
 	return &RootModule{}
 }
 
-// NewModuleInstancePerVU returns an HTTP module instance for each VU.
+// NewModuleInstance returns an HTTP module instance for each VU.
 func (r *RootModule) NewModuleInstance(vu modules.VU) modules.Instance {
 	rt := vu.Runtime()
 	mi := &ModuleInstance{
@@ -110,6 +110,7 @@ func (r *RootModule) NewModuleInstance(vu modules.VU) modules.Instance {
 	return mi
 }
 
+// Exports returns the JS values this module exports.
 func (mi *ModuleInstance) Exports() modules.Exports {
 	return modules.Exports{
 		Default: mi.exports,
